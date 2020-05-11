@@ -5,97 +5,95 @@ display:
   home_url: https://github.com/devheart/static-site-starter-orb
   source_url: https://github.com/devheart/static-site-starter-orb
 
-orbs:
-  sss:
-    commands:
-      build_assets:
-        steps:
-          - run:
-              name: SSS - build/assets
-              command: yarn run build-assets
+commands:
+  build_assets:
+    steps:
+      - run:
+          name: SSS - build/assets
+          command: yarn run build-assets
 
-      build_site:
-        steps:
-          - run:
-              name: SSS - build/site
-              command: yarn run build-site
+  build_site:
+    steps:
+      - run:
+          name: SSS - build/site
+          command: yarn run build-site
 
-      build:
-        steps:
-          - sss/build_assets
-          - sss/build_site
+  build:
+    steps:
+      - build_assets
+      - build_site
 
-      install:
-        steps:
-          - sss/yarn_install
-          - sss/bundle_install
+  install:
+    steps:
+      - yarn_install
+      - bundle_install
 
-      firebase_deploy:
-        description: "Deploy to Firebase"
-        parameters:
-          project_id:
-            type: string
-          token:
-            type: string
-        steps:
-          - run:
-              name: SSS - firebase/install
-              command: yarn install --prefix=./firebase-deploy firebase-tools
-          - run:
-              name: SSS - firebase/deploy
-              command: ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
+  firebase_deploy:
+    description: "Deploy to Firebase"
+    parameters:
+      project_id:
+        type: string
+      token:
+        type: string
+    steps:
+      - run:
+          name: SSS - firebase/install
+          command: yarn install --prefix=./firebase-deploy firebase-tools
+      - run:
+          name: SSS - firebase/deploy
+          command: ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
 
-      yarn_install:
-        description: "Install yarn dependencies"
-        steps:
-          - restore_cache:
-              name: SSS - yarn/restore_cache
-              keys:
-                - yarn-{{ checksum "yarn.lock" }}
-                - yarn-
-          - run:
-              name: SSS - yarn/install
-              command: yarn install --frozen-lockfile
-          - save_cache:
-              name: SSS - yarn/save_cache
-              key: yarn-{{ checksum "yarn.lock" }}
-              paths:
-                - ~/.cache/yarn
+  yarn_install:
+    description: "Install yarn dependencies"
+    steps:
+      - restore_cache:
+          name: SSS - yarn/restore_cache
+          keys:
+            - yarn-{{ checksum "yarn.lock" }}
+            - yarn-
+      - run:
+          name: SSS - yarn/install
+          command: yarn install --frozen-lockfile
+      - save_cache:
+          name: SSS - yarn/save_cache
+          key: yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
 
-      bundle_install:
-        description: "Install bundles"
-        steps:
-          - run:
-              name: SSS - bundles/update_bundler
-              command: gem install bundler
-          - run:
-              name: SSS - bundles/fix_access_rights
-              command: sudo chown -R circleci /usr/local/bundle
-          - restore_cache:
-              name: SSS - bundles/restore_cache
-              keys:
-                - bundles-{{ checksum "jekyll/Gemfile.lock" }}
-                - bundles-
-          - run:
-              name: SSS - bundles/install
-              command: cd jekyll && bundle install
-          - save_cache:
-              name: SSS - bundles/save_cache
-              paths:
-                - /usr/local/bundle
-              key: bundles-{{ checksum "jekyll/Gemfile.lock" }}
+  bundle_install:
+    description: "Install bundles"
+    steps:
+      - run:
+          name: SSS - bundles/update_bundler
+          command: gem install bundler
+      - run:
+          name: SSS - bundles/fix_access_rights
+          command: sudo chown -R circleci /usr/local/bundle
+      - restore_cache:
+          name: SSS - bundles/restore_cache
+          keys:
+            - bundles-{{ checksum "jekyll/Gemfile.lock" }}
+            - bundles-
+      - run:
+          name: SSS - bundles/install
+          command: cd jekyll && bundle install
+      - save_cache:
+          name: SSS - bundles/save_cache
+          paths:
+            - /usr/local/bundle
+          key: bundles-{{ checksum "jekyll/Gemfile.lock" }}
 
-    jobs:
-      build_and_deploy:
-        docker:
-          - image: circleci/ruby:2.6.6-node-browsers
-        environment:
-          JEKYLL_ENV: production
-          NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-        steps:
-          - checkout
-          - sss/install
-          - sss/build
-          - sss/firebase_deploy:
-              project_id: $FIREBASE_PROJECT_ID
-              token: $FIREBASE_TOKEN
+jobs:
+  build_and_deploy:
+    docker:
+      - image: circleci/ruby:2.6.6-node-browsers
+    environment:
+      JEKYLL_ENV: production
+      NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+    steps:
+      - checkout
+      - install
+      - build
+      - firebase_deploy:
+          project_id: $FIREBASE_PROJECT_ID
+          token: $FIREBASE_TOKEN
