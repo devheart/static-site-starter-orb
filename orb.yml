@@ -2,7 +2,6 @@ version: 2.1
 description: "Static Site Starter Orb"
 
 display:
-  home_url: https://github.com/devheart/static-site-starter-orb
   source_url: https://github.com/devheart/static-site-starter-orb
 
 commands:
