@@ -36,9 +36,6 @@ commands:
         type: string
     steps:
       - run:
-          name: SSS - firebase/install
-          command: yarn install --prefix=./firebase-deploy firebase-tools
-      - run:
           name: SSS - firebase/deploy
           command: ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
 
