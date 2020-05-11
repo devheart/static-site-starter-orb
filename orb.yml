@@ -98,9 +98,3 @@ orbs:
           - sss/firebase_deploy:
               project_id: $FIREBASE_PROJECT_ID
               token: $FIREBASE_TOKEN
-
-workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
-      - sss/build_and_deploy
