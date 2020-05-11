@@ -61,10 +61,9 @@ commands:
     steps:
       - run:
           name: SSS - bundles/update_bundler
-          command: gem install bundler
-      - run:
-          name: SSS - bundles/fix_access_rights
-          command: sudo chown -R circleci /usr/local/bundle
+          command: |
+            gem install bundler
+            sudo chown -R circleci /usr/local/bundle
       - restore_cache:
           name: SSS - bundles/restore_cache
           keys:
