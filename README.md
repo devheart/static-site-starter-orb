@@ -1,5 +1,5 @@
 # Static Site Starter Orb
-> An orb for the static site starter project.
+> A CircleCI orb for the Static Site Starter project.
 
 ## Example usage
 ```yaml
