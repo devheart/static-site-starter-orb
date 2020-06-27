@@ -11,7 +11,7 @@ orbs:
 jobs:
   build_and_deploy:
     docker:
-      - image: circleci/ruby:2.6.6-node-browsers
+      - image: circleci/ruby:2.6.6-node
     environment:
       JEKYLL_ENV: production
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
