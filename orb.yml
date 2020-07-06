@@ -64,8 +64,8 @@ commands:
           command: |
             gem install bundler jekyll
             sudo chown -R circleci /usr/local/bundle
-            echo bundler --version
-            echo jekyll --version
+            bundler --version
+            jekyll --version
       - restore_cache:
           name: SSS - bundles/restore_cache
           keys:
