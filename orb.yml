@@ -60,12 +60,11 @@ commands:
     description: "Install bundles"
     steps:
       - run:
-          name: SSS - bundles/update_bundler_jekyll
+          name: SSS - bundles/update_bundler
           command: |
-            gem install bundler jekyll
+            gem install bundler ffi
             sudo chown -R circleci /usr/local/bundle
             bundler --version
-            jekyll --version
       - restore_cache:
           name: SSS - bundles/restore_cache
           keys:
