@@ -60,7 +60,7 @@ commands:
     description: "Install bundles"
     steps:
       - run:
-          name: SSS - bundles/update_bundler
+          name: SSS - bundles/update_bundler_jekyll
           command: |
             gem install bundler jekyll
             sudo chown -R circleci /usr/local/bundle
