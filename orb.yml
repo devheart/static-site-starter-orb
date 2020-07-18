@@ -62,7 +62,7 @@ commands:
       - run:
           name: SSS - bundles/update_bundler
           command: |
-            gem install bundler ffi
+            gem install bundler
             sudo chown -R circleci /usr/local/bundle
             bundler --version
       - restore_cache:
