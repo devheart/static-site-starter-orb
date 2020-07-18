@@ -71,6 +71,11 @@ commands:
             - bundles-{{ checksum "jekyll/Gemfile.lock" }}
             - bundles-
       - run:
+          name: SSS - bundles/gem_config_optimization
+          command: |
+            echo "gem: --no-rdoc --no-ri" >> jekyll/.gemrc
+            echo "gem: --no-document" >> jekyll/.gemrc
+      - run:
           name: SSS - bundles/install
           command: cd jekyll && bundle install
       - save_cache:
