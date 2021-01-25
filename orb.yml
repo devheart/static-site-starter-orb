@@ -5,22 +5,10 @@ display:
   source_url: https://github.com/devheart/static-site-starter-orb
 
 commands:
-  build_assets:
-    steps:
-      - run:
-          name: SSS - build/assets
-          command: yarn run build-assets
-
-  build_site:
-    steps:
-      - run:
-          name: SSS - build/site
-          command: yarn run build-site
-
   build:
-    steps:
-      - build_assets
-      - build_site
+    - run:
+        name: SSS - build
+        command: yarn build
 
   install:
     steps:
@@ -90,7 +78,6 @@ jobs:
       - image: circleci/ruby:2.7-node
     environment:
       JEKYLL_ENV: production
-      # NOKOGIRI_USE_SYSTEM_LIBRARIES: true
     steps:
       - checkout
       - install
