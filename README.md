@@ -6,7 +6,7 @@
 version: 2.1
 
 orbs:
-  sss: devheart/static-site-starter@0.2
+  sss: devheart/static-site-starter@0.3
 
 jobs:
   build_and_deploy:
