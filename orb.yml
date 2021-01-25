@@ -6,9 +6,10 @@ display:
 
 commands:
   build:
-    - run:
-        name: SSS - build
-        command: yarn build
+    steps:
+      - run:
+          name: SSS - build
+          command: yarn build
 
   install:
     steps:
