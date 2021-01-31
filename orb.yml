@@ -5,19 +5,11 @@ display:
   source_url: https://github.com/devheart/static-site-starter-orb
 
 commands:
-  firebase_deploy:
-    description: "Deploy to Firebase"
-    parameters:
-      project_id:
-        type: string
-      token:
-        type: string
+  install:
+    description: "Install dependencies"
     steps:
-      - run:
-          name: "[sss] firebase/deploy"
-          command: |
-            yarn add firebase-tools --frozen-lockfile
-            ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
+      - bundle_install
+      - yarn_install
 
   yarn_install:
     description: "Install yarn dependencies"
@@ -61,6 +53,27 @@ commands:
             - /usr/local/bundle
           key: bundles-{{ checksum "jekyll/Gemfile.lock" }}
 
+  build:
+    description: "Build"
+    steps:
+      - run:
+          name: "[sss] build"
+          command: yarn build
+
+  firebase_deploy:
+    description: "Deploy to Firebase"
+    parameters:
+      project_id:
+        type: string
+      token:
+        type: string
+    steps:
+      - run:
+          name: "[sss] firebase/deploy"
+          command: |
+            yarn add firebase-tools --frozen-lockfile
+            ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
+
 jobs:
   build_and_deploy:
     docker:
@@ -69,9 +82,8 @@ jobs:
       JEKYLL_ENV: production
     steps:
       - checkout
-      - bundle_install
-      - yarn_install
-      - yarn build
+      - install
+      - build
       - firebase_deploy:
           project_id: $FIREBASE_PROJECT_ID
           token: $FIREBASE_TOKEN
