@@ -4,20 +4,23 @@ description: "Static Site Starter Orb"
 display:
   source_url: https://github.com/devheart/static-site-starter-orb
 
+orbs:
+  firebase-deploy: devheart/firebase-deploy@0.1
+
 commands:
   yarn_install:
     description: "Install yarn dependencies"
     steps:
       - restore_cache:
-          name: [sss] yarn/restore_cache
+          name: "[sss] yarn/restore_cache"
           keys:
             - yarn-{{ checksum "yarn.lock" }}
             - yarn-
       - run:
-          name: [sss] yarn/install
+          name: "[sss] yarn/install"
           command: yarn install --frozen-lockfile
       - save_cache:
-          name: [sss] yarn/save_cache
+          name: "[sss] yarn/save_cache"
           key: yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
@@ -26,26 +29,26 @@ commands:
     description: "Install bundles"
     steps:
       - run:
-          name: [sss] bundles/gem_config_optimization
+          name: "[sss] bundles/gem_config_optimization"
           command: |
             echo "gem: --no-rdoc --no-ri" >> jekyll/.gemrc
             echo "gem: --no-document" >> jekyll/.gemrc
       - run:
-          name: [sss] bundles/update_bundler
+          name: "[sss] bundles/update_bundler"
           command: |
             gem install bundler
             sudo chown -R circleci /usr/local/bundle
             bundler --version
       - restore_cache:
-          name: [sss] bundles/restore_cache
+          name: "[sss] bundles/restore_cache"
           keys:
             - bundles-{{ checksum "jekyll/Gemfile.lock" }}
             - bundles-
       - run:
-          name: [sss] bundles/install
+          name: "[sss] bundles/install"
           command: cd jekyll && bundle install
       - save_cache:
-          name: [sss] bundles/save_cache
+          name: "[sss] bundles/save_cache"
           paths:
             - /usr/local/bundle
           key: bundles-{{ checksum "jekyll/Gemfile.lock" }}
@@ -58,8 +61,9 @@ jobs:
       JEKYLL_ENV: production
     steps:
       - checkout
-      - install
-      - build
-      - firebase_deploy:
-          token: $FIREBASE_TOKEN
+      - bundle_install
+      - yarn_install
+      - yarn build
+      - firebase-deploy/deploy:
           project_id: $FIREBASE_PROJECT_ID
+          token: $FIREBASE_TOKEN
