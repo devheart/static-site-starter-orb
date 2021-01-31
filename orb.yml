@@ -4,10 +4,21 @@ description: "Static Site Starter Orb"
 display:
   source_url: https://github.com/devheart/static-site-starter-orb
 
-orbs:
-  firebase-deploy: devheart/firebase-deploy@0.1
-
 commands:
+  firebase_deploy:
+    description: "Deploy to Firebase"
+    parameters:
+      project_id:
+        type: string
+      token:
+        type: string
+    steps:
+      - run:
+          name: "[sss] firebase/deploy"
+          command: |
+            yarn add firebase-tools --frozen-lockfile
+            ./node_modules/.bin/firebase deploy --non-interactive --project "<< parameters.project_id >>" --token "<< parameters.token >>"
+
   yarn_install:
     description: "Install yarn dependencies"
     steps:
@@ -29,13 +40,10 @@ commands:
     description: "Install bundles"
     steps:
       - run:
-          name: "[sss] bundles/gem_config_optimization"
+          name: "[sss] bundles/update_bundler"
           command: |
             echo "gem: --no-rdoc --no-ri" >> jekyll/.gemrc
             echo "gem: --no-document" >> jekyll/.gemrc
-      - run:
-          name: "[sss] bundles/update_bundler"
-          command: |
             gem install bundler
             sudo chown -R circleci /usr/local/bundle
             bundler --version
@@ -64,6 +72,6 @@ jobs:
       - bundle_install
       - yarn_install
       - yarn build
-      - firebase-deploy/deploy:
+      - firebase_deploy:
           project_id: $FIREBASE_PROJECT_ID
           token: $FIREBASE_TOKEN
